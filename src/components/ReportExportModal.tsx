@@ -78,7 +78,7 @@ export const ReportExportModal: React.FC<ReportExportModalProps> = ({
         <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-4 text-xs text-[#191c1e] bg-[#f7f9fb] p-5 rounded-xl border border-[#eceef0]">
           <div className="flex justify-between items-start pb-3 border-b border-[#eceef0]">
             <div>
-              <h2 className="text-base font-bold">TRACKER PRO FINANCIAL REPORT</h2>
+              <h2 className="text-base font-bold">PERSONAL EXPENSES TRACKER PRO FINANCIAL REPORT</h2>
               <p className="text-[11px] text-[#76777d]">Audit Cycle: October 2026 | Encrypted 256-bit</p>
             </div>
             <div className="text-right">

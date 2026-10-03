@@ -12,6 +12,7 @@ interface SidebarProps {
   currentUser: UserProfile;
   onOpenGmailLogin: () => void;
   alertCount?: number;
+  onOpenShareWeb?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -25,7 +26,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   currentUser,
   onOpenGmailLogin,
   alertCount = 0,
+  onOpenShareWeb,
 }) => {
+  const [copiedLink, setCopiedLink] = React.useState(false);
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = 'https://ais-pre-3vji7kgnxxo4l5uqgjsucc-629842193563.asia-east1.run.app';
+    navigator.clipboard.writeText(url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-[#f2f4f6] z-50 flex flex-col pt-8 pb-6 border-r border-[#eceef0] shadow-sm select-none">
       {/* Brand Logo & Name */}
@@ -38,9 +49,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <polygon points="50,34 64,42 64,58 50,66 36,58 36,42" fill="#6ffbbe" opacity="0.8" />
           </svg>
         </div>
-        <div>
-          <span className="text-xl font-bold tracking-tight text-[#191c1e] block leading-none">Tracker Pro</span>
-          <span className="text-[10px] font-medium uppercase tracking-wider text-[#76777d]">Fintech Intelligence</span>
+        <div className="min-w-0">
+          <span className="text-[13px] font-bold text-[#191c1e] block leading-tight truncate">Personal Expenses</span>
+          <span className="text-base font-extrabold tracking-tight text-[#006c49] block leading-tight">Tracker Pro</span>
+          <span className="text-[9px] font-semibold uppercase tracking-wider text-[#76777d]">Fintech Intelligence</span>
         </div>
       </div>
 
@@ -159,6 +171,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>Search Grounding</span>
         </button>
       </nav>
+
+      {/* 1-Click Web App Link Card */}
+      <div className="px-4 pb-3">
+        <div className="bg-[#eef7f2] border border-[#6cf8bb]/60 rounded-xl p-3 flex flex-col gap-2 shadow-2xs">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#006c49]">
+              <span className="material-symbols-outlined text-[16px]">link</span>
+              <span>Web Site Link</span>
+            </div>
+            <span className="text-[9px] bg-[#6cf8bb]/40 text-[#00714d] px-1.5 py-0.5 rounded font-bold uppercase">
+              1-Click
+            </span>
+          </div>
+          <p className="text-[11px] font-mono text-[#006c49]/80 truncate select-all">
+            ais-pre-3vji7kgnxxo4l5uqgjsucc-629842193563.asia-east1.run.app
+          </p>
+          <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+            <button
+              onClick={handleCopyLink}
+              className="py-1 px-2 bg-white hover:bg-[#ddf2e5] text-[#006c49] border border-[#6cf8bb]/50 rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+              title="Copy web link in one click"
+            >
+              <span className="material-symbols-outlined text-[13px]">
+                {copiedLink ? 'check' : 'content_copy'}
+              </span>
+              <span>{copiedLink ? 'Copied!' : 'Copy'}</span>
+            </button>
+            <button
+              onClick={onOpenShareWeb || (() => window.open('https://ais-pre-3vji7kgnxxo4l5uqgjsucc-629842193563.asia-east1.run.app', '_blank'))}
+              className="py-1 px-2 bg-[#006c49] hover:bg-[#005237] text-white rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer"
+              title="Open web site in 1 click"
+            >
+              <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+              <span>Open</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Footer User / Status info */}
       <div className="px-4 pt-4 border-t border-[#eceef0]">

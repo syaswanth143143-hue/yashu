@@ -10,6 +10,7 @@ interface HeaderProps {
   currentUser: UserProfile;
   onOpenGmailLogin: () => void;
   onLogout: () => void;
+  onOpenShareWeb?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,9 +22,19 @@ export const Header: React.FC<HeaderProps> = ({
   currentUser,
   onOpenGmailLogin,
   onLogout,
+  onOpenShareWeb,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [quickCopied, setQuickCopied] = useState(false);
+
+  const handleQuickCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = 'https://ais-pre-3vji7kgnxxo4l5uqgjsucc-629842193563.asia-east1.run.app';
+    navigator.clipboard.writeText(url);
+    setQuickCopied(true);
+    setTimeout(() => setQuickCopied(false), 2000);
+  };
 
   return (
     <header className="fixed top-0 left-64 right-0 h-16 bg-[#f7f9fb]/90 backdrop-blur-xl border-b border-[#eceef0] shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8">
@@ -69,6 +80,25 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             );
           })}
+        </div>
+
+        {/* 1-Click Web Site Link Button */}
+        <div className="flex items-center">
+          <button
+            onClick={onOpenShareWeb}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#eef7f2] hover:bg-[#ddf2e5] border border-[#6cf8bb]/60 text-[#006c49] rounded-xl text-xs font-semibold shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+            title="1-Click Web Site Link & Access"
+          >
+            <span className="material-symbols-outlined text-[16px]">link</span>
+            <span className="hidden lg:inline">Web Site</span>
+            <span
+              onClick={handleQuickCopyLink}
+              className="px-1.5 py-0.5 bg-white text-[10px] text-[#006c49] rounded border border-[#6cf8bb] font-bold hover:bg-[#6cf8bb]/20 transition-all ml-0.5"
+              title="Click to copy link instantly"
+            >
+              {quickCopied ? 'Copied! ✓' : '1-Click'}
+            </span>
+          </button>
         </div>
 
         {/* Quick Add Expense button */}

@@ -222,6 +222,24 @@ export const GmailLoginModal: React.FC<GmailLoginModalProps> = ({
                 </svg>
                 <span>{isLoading ? 'Connecting...' : 'Sign in with Google (Firebase)'}</span>
               </button>
+
+              {/* Public Guest Access Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  onLoginSuccess({
+                    name: 'Guest Visitor',
+                    email: 'visitor@trackerpro.app',
+                    provider: 'guest',
+                    isLoggedIn: true,
+                  });
+                  onClose();
+                }}
+                className="w-full flex items-center justify-center gap-2 bg-[#f2f4f6] hover:bg-[#e6e8ea] text-[#191c1e] rounded-full py-2 px-4 text-xs font-semibold transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px] text-[#006c49]">public</span>
+                <span>Continue as Public Viewer (No Login Required)</span>
+              </button>
             </div>
           </div>
         )}

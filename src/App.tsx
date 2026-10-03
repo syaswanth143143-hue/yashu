@@ -15,6 +15,7 @@ import { VoiceTranscribeModal } from './components/VoiceTranscribeModal';
 import { ReportExportModal } from './components/ReportExportModal';
 import { GmailLoginModal } from './components/GmailLoginModal';
 import { CategoryBudgetsModal } from './components/CategoryBudgetsModal';
+import { ShareWebModal } from './components/ShareWebModal';
 import {
   DEFAULT_BUDGET_SETTINGS,
   loadCategoryBudgets,
@@ -69,6 +70,7 @@ export default function App() {
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isGmailLoginOpen, setIsGmailLoginOpen] = useState(false);
+  const [isShareWebOpen, setIsShareWebOpen] = useState(false);
   const [exportType, setExportType] = useState<'csv' | 'pdf' | 'json'>('pdf');
   const [copilotPrompt, setCopilotPrompt] = useState<string | undefined>();
 
@@ -200,6 +202,7 @@ export default function App() {
         currentUser={currentUser}
         onOpenGmailLogin={() => setIsGmailLoginOpen(true)}
         alertCount={alerts.length}
+        onOpenShareWeb={() => setIsShareWebOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -214,6 +217,7 @@ export default function App() {
           currentUser={currentUser}
           onOpenGmailLogin={() => setIsGmailLoginOpen(true)}
           onLogout={handleLogout}
+          onOpenShareWeb={() => setIsShareWebOpen(true)}
         />
 
         {/* Routed Content View */}
@@ -314,6 +318,11 @@ export default function App() {
         onClose={() => setIsGmailLoginOpen(false)}
         currentUser={currentUser}
         onLoginSuccess={handleLoginSuccess}
+      />
+
+      <ShareWebModal
+        isOpen={isShareWebOpen}
+        onClose={() => setIsShareWebOpen(false)}
       />
     </div>
   );

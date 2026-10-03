@@ -1,7 +1,9 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { GoogleGenAI, GenerateVideosOperation, Type } from '@google/genai';
 
 dotenv.config();
@@ -12,8 +14,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Healthcheck endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', app: 'Personal Expenses Tracker Pro', timestamp: new Date().toISOString() });
+});
 
 // Initialize GoogleGenAI client on server
 const getAiClient = () => {
@@ -519,22 +527,32 @@ app.post('/api/analyze-receipt', async (req, res) => {
 
 // Setup Vite middleware in dev or static files in production
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
+  const distDir = path.resolve(__dirname, 'dist');
+  const indexHtml = path.resolve(distDir, 'index.html');
+  const hasDist = fs.existsSync(indexHtml);
+  const isDev = process.env.NODE_ENV === 'development' || process.env.npm_lifecycle_event === 'dev';
+
+  if (hasDist && !isDev) {
+    console.log('Serving production static build from dist/');
+    app.use(express.static(distDir));
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(indexHtml);
+    });
+  } else {
+    console.log('Starting Vite development middleware...');
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-    });
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Tracker Pro server listening on http://0.0.0.0:${PORT}`);
+    console.log(`Personal Expenses Tracker Pro server listening on http://0.0.0.0:${PORT}`);
   });
 }
 
