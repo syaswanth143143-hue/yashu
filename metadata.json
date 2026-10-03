@@ -1,0 +1,6 @@
+{
+  "name": "Tracker Pro - AI Financial Copilot & Wealth Analytics",
+  "description": "Intelligent personal expense tracker and wealth analytics platform featuring Gemini 3.5 AI Copilot, audio transcription, video understanding, Search grounding, and Veo image-to-video animation.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

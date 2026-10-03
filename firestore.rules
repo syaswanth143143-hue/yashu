@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User Profile Document
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId) &&
+        request.resource.data.keys().hasAll(['uid', 'email']) &&
+        request.resource.data.uid == userId &&
+        request.resource.data.email is string;
+      allow delete: if false;
+
+      // Category Budgets Subcollection
+      match /categoryBudgets/{budgetId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) &&
+          request.resource.data.keys().hasAll(['category', 'monthlyLimit', 'userId']) &&
+          request.resource.data.userId == userId &&
+          request.resource.data.monthlyLimit is number &&
+          request.resource.data.category is string;
+        allow delete: if isOwner(userId);
+      }
+
+      // Transactions Subcollection
+      match /transactions/{transactionId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) &&
+          request.resource.data.keys().hasAll(['vendor', 'amount', 'category', 'userId']) &&
+          request.resource.data.userId == userId &&
+          request.resource.data.amount is number &&
+          request.resource.data.vendor is string &&
+          request.resource.data.category is string;
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
